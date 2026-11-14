@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://levels/final_boss/main.gd" id="1_h2yge"]
+[ext_resource type="PackedScene" path="res://levels/final_boss/player.tscn" id="1_ig7tw"]
+[ext_resource type="PackedScene" path="res://levels/final_boss/boss.tscn" id="2_0xm2m"]
+[ext_resource type="Script" path="res://levels/final_boss/camera_follow.gd" id="4_1bvp3"]
+
+[node name="Main" type="Node2D" unique_id=1982255950]
+script = ExtResource("1_h2yge")
+
+[node name="Player" parent="." unique_id=137797174 instance=ExtResource("1_ig7tw")]
+position = Vector2(576, 324)
+
+[node name="Boss" parent="." unique_id=373754041 instance=ExtResource("2_0xm2m")]
+position = Vector2(1302, 324)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=925294256]
+position = Vector2(576, 324)
+script = ExtResource("4_1bvp3")

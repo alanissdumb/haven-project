@@ -1,0 +1,45 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://levels/final_boss/boss.gd" id="1_0bnu1"]
+[ext_resource type="Texture2D" path="res://levels/final_boss/black_hole_2.png" id="2_6xxrv"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_s25t5"]
+radius = 300.0
+
+[node name="Boss" type="Area2D" unique_id=373754041]
+script = ExtResource("1_0bnu1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1445957505]
+shape = SubResource("CircleShape2D_s25t5")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1184720921]
+
+[node name="HPBar" type="ProgressBar" parent="CanvasLayer" unique_id=616465134]
+offset_left = 276.0
+offset_top = 36.0
+offset_right = 876.0
+offset_bottom = 63.0
+show_percentage = false
+
+[node name="NameLabel" type="Label" parent="CanvasLayer" unique_id=1658450239]
+offset_left = 276.0
+offset_top = 4.0
+offset_right = 876.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(1, 0.2542795, 0.41260454, 1)
+theme_override_font_sizes/font_size = 20
+text = "Proxima Centauri"
+horizontal_alignment = 1
+
+[node name="Timer" type="Timer" parent="." unique_id=1864105220]
+wait_time = 4.0
+autostart = true
+
+[node name="BallTimer" type="Timer" parent="." unique_id=1889339834]
+wait_time = 4.0
+
+[node name="ShockTimer" type="Timer" parent="." unique_id=1822483210]
+
+[node name="HoleSprite" type="Sprite2D" parent="." unique_id=1959053772]
+texture_filter = 1
+texture = ExtResource("2_6xxrv")

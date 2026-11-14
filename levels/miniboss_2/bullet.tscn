@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://levels/miniboss_2/bullet.gd" id="1_v7oki"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e28l0"]
+size = Vector2(24, 6)
+
+[node name="Bullet" type="Area2D" unique_id=1468467732]
+script = ExtResource("1_v7oki")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=105870576]
+offset_left = -12.0
+offset_top = 3.0
+offset_right = 12.0
+offset_bottom = 9.0
+color = Color(0.8360068, 0.83600616, 7.70092e-07, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=404427814]
+position = Vector2(0, 6)
+shape = SubResource("RectangleShape2D_e28l0")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=1548355017]
+position = Vector2(-2, -1)
+rect = Rect2(-10, 4, 24, 6)

@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://levels/miniboss_1/boss.tscn" id="1_0xm2m"]
+[ext_resource type="PackedScene" path="res://levels/miniboss_1/player.tscn" id="1_ig7tw"]
+
+[node name="Main" type="Node2D" unique_id=439131614]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=267219379]
+anchor_mode = 0
+zoom = Vector2(0.7, 0.7)
+
+[node name="Boss" parent="." unique_id=247088186 instance=ExtResource("1_0xm2m")]
+position = Vector2(1400, 450)
+
+[node name="Player" parent="." unique_id=137797174 instance=ExtResource("1_ig7tw")]
+position = Vector2(300, 450)

@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://levels/miniboss_2/ring_wave.gd" id="1_vvgse"]
+
+[node name="RingWave" type="Node2D" unique_id=251631630]
+script = ExtResource("1_vvgse")

@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://levels/miniboss_2/ring_projectile.gd" id="1_ring"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ring"]
+radius = 22.0
+
+[node name="RingProjectile" type="Area2D"]
+script = ExtResource("1_ring")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ring")

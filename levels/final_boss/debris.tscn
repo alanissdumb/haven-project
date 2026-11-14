@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://levels/final_boss/debris.gd" id="1_e8eya"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_s25t5"]
+radius = 20.0
+
+[node name="Debris" type="Area2D" unique_id=1796991608]
+script = ExtResource("1_e8eya")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1548637390]
+shape = SubResource("CircleShape2D_s25t5")

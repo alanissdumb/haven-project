@@ -1,0 +1,65 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://levels/miniboss_2/Space ship 2d.png" id="1_4flbx"]
+[ext_resource type="Script" path="res://levels/miniboss_2/player.gd" id="1_onrkg"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_e28l0"]
+radius = 77.0
+height = 202.0
+
+[node name="Player" type="CharacterBody2D" unique_id=137797174]
+script = ExtResource("1_onrkg")
+
+[node name="Ship" type="Sprite2D" parent="." unique_id=963180993]
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("1_4flbx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=290456138]
+position = Vector2(-1.000001, 6.9999995)
+scale = Vector2(0.7, 0.7)
+shape = SubResource("CapsuleShape2D_e28l0")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=34773682]
+
+[node name="DashBar" type="ProgressBar" parent="CanvasLayer" unique_id=1779618410]
+offset_left = 20.0
+offset_top = 60.0
+offset_right = 160.0
+offset_bottom = 70.0
+max_value = 2.0
+show_percentage = false
+
+[node name="Hearts" type="HBoxContainer" parent="CanvasLayer" unique_id=122941634]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 60.0
+offset_bottom = 60.0
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/Hearts" unique_id=1774036812]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+color = Color(1, 0.11759282, 0.27065516, 0.9764706)
+
+[node name="ColorRect2" type="ColorRect" parent="CanvasLayer/Hearts" unique_id=880535546]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+color = Color(1, 0.11764706, 0.27058825, 0.9764706)
+
+[node name="ColorRect3" type="ColorRect" parent="CanvasLayer/Hearts" unique_id=1848651004]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+color = Color(1, 0.11764706, 0.27058825, 0.9764706)
+
+[node name="ColorRect4" type="ColorRect" parent="CanvasLayer/Hearts" unique_id=1670551849]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+color = Color(1, 0.11764706, 0.27058825, 0.9764706)
+
+[node name="BuffLabel" type="Label" parent="CanvasLayer" unique_id=447299953]
+offset_left = 20.0
+offset_top = 100.0
+offset_right = 60.0
+offset_bottom = 123.0
+theme_override_font_sizes/font_size = 18
+
+[node name="Explosion" type="Node2D" parent="." unique_id=2051771972]

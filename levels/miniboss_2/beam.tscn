@@ -1,0 +1,27 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://levels/miniboss_2/beam.gd" id="1_i4dc2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e28l0"]
+size = Vector2(1400, 30)
+
+[node name="Beam" type="Area2D" unique_id=511253270]
+script = ExtResource("1_i4dc2")
+
+[node name="Warning" type="ColorRect" parent="." unique_id=2092416853]
+offset_top = -2.0
+offset_right = 1400.0
+offset_bottom = 2.0
+
+[node name="Visual" type="ColorRect" parent="." unique_id=1371648800]
+offset_top = -15.0
+offset_right = 1400.0
+offset_bottom = 15.0
+color = Color(0.9957656, 1, 0.31805596, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=49387766]
+position = Vector2(700, 0)
+shape = SubResource("RectangleShape2D_e28l0")
+
+[node name="Sparks" type="Node2D" parent="." unique_id=427654472]
+z_index = 1

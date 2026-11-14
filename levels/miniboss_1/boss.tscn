@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://icon.svg" id="1_0bnu1"]
+[ext_resource type="Script" path="res://levels/miniboss_1/boss.gd" id="1_6xxrv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0xm2m"]
+
+[node name="boss" type="Area2D" unique_id=67675212]
+script = ExtResource("1_6xxrv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=859760893]
+scale = Vector2(6.3, 6.3)
+shape = SubResource("RectangleShape2D_0xm2m")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1635311255]
+texture = ExtResource("1_0bnu1")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=21542127]
+
+[node name="HPBar" type="ProgressBar" parent="CanvasLayer" unique_id=931813065]
+offset_left = 276.0
+offset_top = 20.0
+offset_right = 876.0
+offset_bottom = 47.0
+
+[node name="Timer" type="Timer" parent="." unique_id=1995365562]
+wait_time = 4.0
+autostart = true
