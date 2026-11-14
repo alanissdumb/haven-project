@@ -24,6 +24,10 @@ Levels="*res://levels/levels.gd"
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/team_create/plugin.cfg")
+
 [input]
 
 ui_left={
@@ -66,7 +70,3 @@ ui_down={
 [rendering]
 
 rendering_device/driver.windows="d3d12"
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/team_create/plugin.cfg")
