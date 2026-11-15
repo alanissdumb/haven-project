@@ -8,15 +8,20 @@ const ACTIVE_TIME = 6.0
 const TURN_SPEED = 0.25      # radians per second
 const REVERSE_PAUSE = 0.5    # arms freeze and flash, then spin the other way
 
+const PX_SCALE = 5.0        # bh_ult_beam is ~20 art px thick -> 100 px over the 95 px hitbox
+
 var timer = 0.0
 var angle = 0.0
 var dir = 1.0
 var reversed = false
 var pause_left = 0.0
+var arms = []
+var origin = null
 
 func _ready():
 	angle = randf() * TAU
 	dir = [-1.0, 1.0].pick_random()
+	make_arms()
 
 func _physics_process(delta):
 	timer += delta
@@ -46,20 +51,25 @@ func check_hit():
 			player.take_damage(1)
 			return
 
-func _process(_delta):
-	queue_redraw()
+func make_arms():
+	for k in range(ARMS):
+		var pivot = Node2D.new()
+		add_child(pivot)
+		var warn = FX.strip("bh_grid_warning", pivot, LENGTH, PX_SCALE)
+		var beam = FX.strip("bh_ult_beam", pivot, LENGTH, PX_SCALE)
+		beam.hide()
+		arms.append({"pivot": pivot, "warn": warn, "beam": beam})
+	origin = FX.spawn("bh_ult_beam_origin", self, Vector2.ZERO, 0, PX_SCALE)
+	origin.hide()
 
-func _draw():
+func _process(_delta):
 	var active = timer >= WARN_TIME
 	var frozen = pause_left > 0.0
+	origin.visible = active
 	for k in range(ARMS):
-		var d = Vector2.RIGHT.rotated(angle + k * TAU / ARMS)
-		if active:
-			var glow = Color(1, 0.4, 0.8, 0.35)
-			if frozen:
-				glow = Color(1, 0.9, 0.4, 0.55)   # yellow flash: about to reverse
-			draw_line(Vector2.ZERO, d * LENGTH, glow, WIDTH)
-			draw_line(Vector2.ZERO, d * LENGTH, Color(1, 0.95, 1.0), WIDTH * 0.3)
-		else:
-			var pulse = 0.4 + 0.4 * sin(timer * 25.0)
-			draw_line(Vector2.ZERO, d * LENGTH, Color(1, 0.5, 0.9, pulse), 3.0)
+		var arm = arms[k]
+		arm.pivot.rotation = angle + k * TAU / ARMS
+		arm.warn.visible = not active
+		arm.beam.visible = active
+		# yellow flash: about to reverse
+		arm.beam.modulate = Color(1, 0.9, 0.5) if frozen else Color.WHITE

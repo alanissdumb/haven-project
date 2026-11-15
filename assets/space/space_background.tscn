@@ -1,0 +1,57 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/space/space_bg.png" id="1_space_bg"]
+[ext_resource type="Texture2D" path="res://assets/space/stars_far.png" id="2_stars_far"]
+[ext_resource type="Texture2D" path="res://assets/space/stars_mid.png" id="3_stars_mid"]
+[ext_resource type="Texture2D" path="res://assets/space/stars_near.png" id="4_stars_near"]
+
+[node name="SpaceBackground" type="CanvasLayer"]
+layer = -100
+
+[node name="SpaceBg" type="Parallax2D" parent="."]
+repeat_size = Vector2(1280, 720)
+autoscroll = Vector2(6.0, 0)
+repeat_times = 3
+ignore_camera_scroll = true
+
+[node name="Sprite2D" type="Sprite2D" parent="SpaceBg"]
+texture_filter = 1
+scale = Vector2(4, 4)
+texture = ExtResource("1_space_bg")
+centered = false
+
+[node name="StarsFar" type="Parallax2D" parent="."]
+repeat_size = Vector2(1280, 720)
+autoscroll = Vector2(12, 0)
+repeat_times = 3
+ignore_camera_scroll = true
+
+[node name="Sprite2D" type="Sprite2D" parent="StarsFar"]
+texture_filter = 1
+scale = Vector2(4, 4)
+texture = ExtResource("2_stars_far")
+centered = false
+
+[node name="StarsMid" type="Parallax2D" parent="."]
+repeat_size = Vector2(1280, 720)
+autoscroll = Vector2(24, 0)
+repeat_times = 3
+ignore_camera_scroll = true
+
+[node name="Sprite2D" type="Sprite2D" parent="StarsMid"]
+texture_filter = 1
+scale = Vector2(4, 4)
+texture = ExtResource("3_stars_mid")
+centered = false
+
+[node name="StarsNear" type="Parallax2D" parent="."]
+repeat_size = Vector2(1280, 720)
+autoscroll = Vector2(48, 0)
+repeat_times = 3
+ignore_camera_scroll = true
+
+[node name="Sprite2D" type="Sprite2D" parent="StarsNear"]
+texture_filter = 1
+scale = Vector2(4, 4)
+texture = ExtResource("4_stars_near")
+centered = false

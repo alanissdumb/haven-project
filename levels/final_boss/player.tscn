@@ -1,6 +1,6 @@
 [gd_scene format=3]
 
-[ext_resource type="Texture2D" path="res://levels/final_boss/Space ship 2d.png" id="1_4flbx"]
+[ext_resource type="Script" path="res://assets/ship/ship_sprite.gd" id="9_shipfx"]
 [ext_resource type="Script" path="res://levels/final_boss/player.gd" id="1_onrkg"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_e28l0"]
@@ -11,8 +11,9 @@ height = 202.0
 script = ExtResource("1_onrkg")
 
 [node name="Ship" type="Sprite2D" parent="." unique_id=963180993]
-scale = Vector2(0.7, 0.7)
-texture = ExtResource("1_4flbx")
+scale = Vector2(0.45, 0.45)
+script = ExtResource("9_shipfx")
+engine = "blue"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=290456138]
 position = Vector2(-1.000001, 6.9999995)

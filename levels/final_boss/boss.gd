@@ -11,6 +11,8 @@ const RING = preload("res://levels/final_boss/ring_wave.tscn")
 const SWEEP = preload("res://levels/final_boss/sweep_arms.tscn")
 const BOSS_SCALE = 2.5
 const STAR_RADIUS = 300.0
+const SUN_TEXTURE = preload("res://assets/sun/sun.png")
+const SUN_ART_RADIUS = 172.0   # radius of the sun disc in sun.png
 const HOLE_RADIUS = 375.0 * BOSS_SCALE
 const SPRITE_SCALE = 0.75 * BOSS_SCALE
 # Black hole hitbox (in sprite pixels; scaled by SPRITE_SCALE)
@@ -21,7 +23,7 @@ const HOLE_DISK_OFFSET = Vector2(0, 48)
 const BH_MAX_HP = 250
 const CAM_ZOOM = 0.45
 const CAM_ZOOM_NOVA = 0.3      # the wider shot for the supernova
-const ARENA_P2 = Rect2(-2175, -1175, 5500, 3000)   # the play area in the black hole phase
+const ARENA_P2 = Rect2(-2375, -1375, 5900, 3400)   # the play area in the black hole phase
 const BAR_SPEED = 120.0       # how fast the HP bar fills or drains (HP per second)
 const HOLE_SPEED_BOOST = 1.5
 const DRIFT_AREA = Rect2(-600, -300, 2350, 1250)
@@ -92,7 +94,6 @@ var transitioning = false
 var star_visible = true
 var star_scale = 1.0
 var charge = 0.0
-var nova = 0.0
 var flash = 0.0
 var hole = 0.0
 var shake = 0.0
@@ -119,7 +120,6 @@ var absorbing = false
 var summon_points = []
 var absorbed = 0
 var absorb_fx = 0.0
-var absorb_flash = 0.0
 var return_waves = 0
 var return_count = 0
 var return_offset = 0.0
@@ -130,6 +130,16 @@ var inhale = 0.0
 var stunned = false
 var enraged = false
 
+# Sprite effects (sheets from FX, see assets/fx/sun_blackhole_fx/README.md)
+var sun_sprite = null        # the sun itself (Alan's art)
+var sun_glow = null          # white-hot overlay as it collapses
+var aura_fx = null           # sun_ring around the star
+var swirl_fx = []            # ambient particles behind the black hole
+var pull_fx = null           # gravity surge rings
+var shield_fx = null         # absorb shield
+var shield_hit_fx = null
+var ult_ring_fx = null       # ultimate charging ring
+
 func _ready():
 	z_index = 1
 	add_to_group("boss")
@@ -137,6 +147,8 @@ func _ready():
 	# doesn't carry over when the scene restarts
 	$CollisionShape2D.shape = $CollisionShape2D.shape.duplicate()
 	$CollisionShape2D.shape.radius = STAR_RADIUS
+
+	make_fx()
 
 	hp = max_hp
 	$CanvasLayer/HPBar.max_value = max_hp
@@ -167,7 +179,9 @@ func fire_beams():
 func fire_balls():
 	for i in range(2):
 		var ball = BALL.instantiate()
-		ball.global_position = Vector2(60, randf_range(100 + i * 250, 300 + i * 250))
+		var view = view_rect()
+		var band = Vector2(100 + i * 250, 300 + i * 250) / 648.0   # top / bottom bands of the screen
+		ball.global_position = Vector2(view.position.x + 60, view.position.y + view.size.y * randf_range(band.x, band.y))
 		ball.target = self
 		ball.velocity = Vector2(randf_range(50, 150), randf_range(-150, 150))
 		get_parent().add_child(ball)
@@ -185,7 +199,8 @@ func take_damage(amount):
 	if absorbing:
 		# Absorb and return: swallow the bullet, count it, heal a little
 		absorbed += 1
-		absorb_flash = 1.0
+		shield_hit_fx.show()
+		shield_hit_fx.play(&"v0")
 		hp = min(hp + ABSORB_HEAL, BH_MAX_HP)
 		return
 	if stunned:
@@ -240,13 +255,13 @@ func start_transition():
 	collapse.tween_property(self, "shake", 10.0, 1.4)
 	await collapse.finished
 
-	# 2. Supernova, with the camera zooming out
+	# 2. Supernova, with the camera zooming out. The sheet's first frame is
+	# the sun itself, so it takes over from the star seamlessly.
 	star_visible = false
+	FX.spawn("sun_supernova", self, Vector2.ZERO, 0, FX.scale_for("sun_supernova", STAR_RADIUS * star_scale))
 	flash = 1.0
-	nova = 0.01
 	shake = 30.0
 	var boom = create_tween().set_parallel(true)
-	boom.tween_property(self, "nova", 1.0, 2.2)
 	boom.tween_property(self, "flash", 0.0, 1.0)
 	boom.tween_property(self, "shake", 0.0, 2.0)
 
@@ -426,13 +441,15 @@ func update_spiral(delta):
 		spiral_cd = SPIRAL_RATE
 		spiral_angle += SPIRAL_TURN * spiral_dir
 		for i in range(SPIRAL_ARMS):
-			spawn_orb(spiral_angle + i * TAU / SPIRAL_ARMS, SPIRAL_SPEED, Color(1.0, 0.45, 0.25))
+			spawn_orb(spiral_angle + i * TAU / SPIRAL_ARMS, SPIRAL_SPEED, "bh_matter_dots")
 
-func spawn_orb(angle, orb_speed, col):
+# sheet: "bh_matter_dots" or "bh_void_orbs". variant: 0/1/2 = small/medium/large
+func spawn_orb(angle, orb_speed, sheet, variant = 1):
 	var orb = ORB.instantiate()
 	orb.global_position = global_position
 	orb.velocity = Vector2.RIGHT.rotated(angle) * orb_speed
-	orb.color = col
+	orb.sheet = sheet
+	orb.variant = variant
 	get_parent().add_child(orb)
 
 # ---------- Slingshot debris ----------
@@ -515,7 +532,8 @@ func update_absorb(delta):
 		absorbing = false
 		return_count = clampi(absorbed, ABSORB_MIN, ABSORB_MAX)
 		return_offset = randf() * TAU
-	absorb_fx = move_toward(absorb_fx, 0.0, delta * 2.0)
+		absorb_fx = 0.0
+		FX.spawn("bh_force_field_break", self, Vector2.ZERO, 0, shield_fx.scale.x)
 
 	# Return fire in several waves
 	if return_waves < RETURN_WAVES and t >= t_end + return_waves * RETURN_WAVE_GAP:
@@ -529,7 +547,7 @@ func fire_return_wave(k):
 	for i in range(return_count):
 		# every other wave is shifted half a step, so the gaps swap sides
 		var a = return_offset + i * step + (k % 2) * step / 2.0
-		spawn_orb(a, RETURN_SPEED, Color(0.4, 0.9, 1.0))
+		spawn_orb(a, RETURN_SPEED, "bh_void_orbs")
 
 	if k == 0:
 		# a fast fan aimed straight at the ship
@@ -537,7 +555,7 @@ func fire_return_wave(k):
 		if player:
 			var aim = (player.global_position - global_position).angle()
 			for j in range(RETURN_AIMED):
-				spawn_orb(aim + (j - (RETURN_AIMED - 1) / 2.0) * 0.12, RETURN_AIMED_SPEED, Color(0.7, 1.0, 1.0))
+				spawn_orb(aim + (j - (RETURN_AIMED - 1) / 2.0) * 0.12, RETURN_AIMED_SPEED, "bh_void_orbs", 2)
 
 	shake = 12.0
 	create_tween().tween_property(self, "shake", 0.0, 0.4)
@@ -579,7 +597,7 @@ func update_ultimate(delta):
 			spiral_cd = ULT_ORB_RATE
 			spiral_angle += 0.5
 			for i in range(2):
-				spawn_orb(spiral_angle + i * PI, 260.0, Color(1.0, 0.45, 0.25))
+				spawn_orb(spiral_angle + i * PI, 260.0, "bh_matter_dots")
 	elif t < t_launch:
 		# 3. Inhale: gravity lets go, the first pulse is telegraphed
 		if ult_stage < 2:
@@ -619,6 +637,7 @@ func spawn_pulse(warn, pulse_speed, col):
 	spawn_ring(0.0, 0.0, pulse_speed, warn, 90.0 * BOSS_SCALE, HOLE_RADIUS * 0.9, col)
 
 func ult_burst():
+	FX.spawn("bh_ult_ring", self, Vector2.ZERO, 0, FX.scale_for("bh_ult_ring", HOLE_RADIUS * 1.2))
 	shake = 25.0
 	flash = 0.6
 	var burst = create_tween().set_parallel(true)
@@ -630,8 +649,8 @@ func ult_burst():
 func _process(delta):
 	spin += delta * 1.5
 	$CanvasLayer/HPBar.value = move_toward($CanvasLayer/HPBar.value, hp, BAR_SPEED * delta)
-	absorb_flash = move_toward(absorb_flash, 0.0, delta * 4.0)
 	queue_redraw()
+	update_fx()
 
 	var cam = get_viewport().get_camera_2d()
 	if cam:
@@ -656,54 +675,12 @@ func _process(delta):
 func _draw():
 	if ult_fx > 0.0:
 		draw_rect(Rect2(-8000, -8000, 16000, 16000), Color(0.0, 0.0, 0.05, ult_fx * 0.55))
-	if star_visible:
-		draw_star()
-	if nova > 0.0:
-		draw_nova()
-	if surge_fx > 0.0:
-		draw_surge()
 	if attack == "summon" and not summon_points.is_empty():
 		draw_summon()
-	if absorb_fx > 0.0:
-		draw_absorb()
 	if stunned:
 		draw_stun()
 	if flash > 0.0:
 		draw_rect(Rect2(-8000, -8000, 16000, 16000), Color(1, 1, 1, flash))
-
-func draw_star():
-	var jitter = Vector2(randf_range(-1, 1), randf_range(-1, 1)) * charge * 10.0
-	var col = Color(0.8, 0.3, 0.2).lerp(Color(1, 0.95, 0.8), charge)
-	draw_circle(jitter, STAR_RADIUS * star_scale, col)
-
-func draw_nova():
-	var fade = 1.0 - nova
-	var r = STAR_RADIUS + nova * 1400.0
-	draw_circle(Vector2.ZERO, r, Color(1, 0.6, 0.2, fade * 0.5))
-	draw_circle(Vector2.ZERO, r * 0.6, Color(1, 0.95, 0.7, fade * 0.8))
-	for k in range(3):
-		var ring = STAR_RADIUS + nova * (900.0 + k * 500.0)
-		draw_arc(Vector2.ZERO, ring, 0, TAU, 96, Color(1, 0.8, 0.5, fade), 4.0 + fade * 14.0)
-	for i in range(24):
-		var dir = Vector2.RIGHT.rotated(i * TAU / 24.0)
-		var inner = STAR_RADIUS * 0.8 + nova * 600.0
-		var outer = inner + 150.0 + (i % 4) * 120.0 + nova * 800.0
-		draw_line(dir * inner, dir * outer, Color(1, 0.9, 0.6, fade), 6.0)
-
-func draw_surge():
-	for k in range(4):
-		var f = fposmod(spin * 0.7 + k * 0.25, 1.0)
-		var rad = lerp(HOLE_RADIUS * 2.0, HOLE_RADIUS * 0.5, f)
-		var col = Color(0.8, 0.5, 1.0, surge_fx * f * 0.6)
-		draw_arc(Vector2.ZERO, rad, 0, TAU, 128, col, (3.0 + f * 5.0) * BOSS_SCALE)
-
-func draw_absorb():
-	var s = BOSS_SCALE
-	var r = HOLE_RADIUS + 25.0 * s + sin(spin * 6.0) * 6.0 * s
-	for k in range(3):
-		var start = spin * (1.5 + k * 0.5) + k * 2.0
-		draw_arc(Vector2.ZERO, r + k * 14.0 * s, start, start + PI * 0.9, 64, Color(0.4, 0.9, 1.0, absorb_fx * 0.8), 5.0 * s)
-	draw_circle(Vector2.ZERO, r, Color(0.4, 0.9, 1.0, absorb_flash * 0.25))
 
 func draw_stun():
 	var s = BOSS_SCALE
@@ -753,3 +730,72 @@ func draw_summon():
 		var lp = to_local(p)
 		draw_arc(lp, 160.0 * BOSS_SCALE * (1.0 - t * 0.7), 0, TAU, 48, Color(1.0, 0.4, 0.6, 0.4 + 0.5 * t), 6.0 * BOSS_SCALE)
 		draw_circle(lp, 40.0 * BOSS_SCALE * t, Color(1.0, 0.4, 0.6, 0.35))
+
+# ---------- Sprite effects ----------
+
+func make_fx():
+	sun_sprite = Sprite2D.new()
+	sun_sprite.texture = SUN_TEXTURE
+	sun_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	add_child(sun_sprite)
+	sun_glow = Sprite2D.new()
+	sun_glow.texture = SUN_TEXTURE
+	var add = CanvasItemMaterial.new()
+	add.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	sun_glow.material = add
+	sun_glow.modulate.a = 0.0
+	sun_sprite.add_child(sun_glow)
+
+	aura_fx = FX.spawn("sun_ring", self, Vector2.ZERO, 0, FX.scale_for("sun_ring", STAR_RADIUS))
+
+	# Behind the black hole sprite
+	for key in ["bh_random_particles", "bh_spiral_particles"]:
+		var p = FX.spawn(key, self)
+		p.hide()
+		swirl_fx.append(p)
+	pull_fx = FX.spawn("bh_gravity_pull", self, Vector2.ZERO, 0, FX.scale_for("bh_gravity_pull", HOLE_RADIUS * 2.0))
+	pull_fx.hide()
+	for n in swirl_fx + [pull_fx]:
+		move_child(n, $HoleSprite.get_index())
+
+	# In front of it
+	var shield_scale = FX.scale_for("bh_force_field", HOLE_RADIUS + 25.0 * BOSS_SCALE)
+	shield_fx = FX.spawn("bh_force_field", self, Vector2.ZERO, 0, shield_scale)
+	shield_fx.hide()
+	shield_hit_fx = FX.spawn("bh_force_field_hit", self, Vector2.ZERO, 0, shield_scale)
+	shield_hit_fx.animation_finished.disconnect(shield_hit_fx.queue_free)   # reused for every hit
+	shield_hit_fx.animation_finished.connect(shield_hit_fx.hide)
+	shield_hit_fx.hide()
+	ult_ring_fx = FX.spawn("bh_ult_ring_loop", self, Vector2.ZERO, 0, FX.scale_for("bh_ult_ring_loop", HOLE_RADIUS))
+	ult_ring_fx.hide()
+
+func update_fx():
+	# the sun holds still; it only shudders while collapsing into the supernova
+	var jitter = Vector2(randf_range(-1, 1), randf_range(-1, 1)) * charge * 10.0
+	sun_sprite.visible = star_visible
+	sun_sprite.scale = Vector2.ONE * STAR_RADIUS * star_scale / SUN_ART_RADIUS
+	sun_sprite.position = jitter
+	sun_glow.modulate.a = charge
+	aura_fx.visible = star_visible
+	aura_fx.scale = Vector2.ONE * FX.scale_for("sun_ring", STAR_RADIUS * star_scale)
+	aura_fx.position = jitter
+
+	for p in swirl_fx:
+		p.visible = hole > 0.0
+		p.scale = Vector2.ONE * FX.scale_for("bh_spiral_particles", HOLE_RADIUS * 1.1) * hole
+		p.modulate.a = clamp(hole, 0.0, 1.0)
+
+	pull_fx.visible = surge_fx > 0.0
+	pull_fx.modulate.a = surge_fx
+
+	shield_fx.visible = absorb_fx > 0.0
+	shield_fx.modulate.a = absorb_fx
+	if not absorbing:
+		shield_hit_fx.hide()
+
+	# charging the ultimate, and while each pulse winds up
+	var ult_charging = attack == "ultimate" and (ult_stage == 0 or inhale > 0.0)
+	ult_ring_fx.visible = ult_charging
+	if ult_charging:
+		var k = attack_time / ULT_CHARGE if ult_stage == 0 else inhale
+		ult_ring_fx.modulate.a = clamp(k, 0.0, 1.0)

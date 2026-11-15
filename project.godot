@@ -18,6 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 Levels="*res://levels/levels.gd"
+FX="*res://assets/fx/fx_library.gd"
+Asteroids="*res://assets/asteroids/asteroids.gd"
 
 [display]
 

@@ -13,11 +13,7 @@ offset_top = -2.0
 offset_right = 1400.0
 offset_bottom = 2.0
 
-[node name="Visual" type="ColorRect" parent="." unique_id=1371648800]
-offset_top = -15.0
-offset_right = 1400.0
-offset_bottom = 15.0
-color = Color(0.9957656, 1, 0.31805596, 1)
+[node name="Visual" type="Node2D" parent="." unique_id=1371648800]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=49387766]
 position = Vector2(700, 0)

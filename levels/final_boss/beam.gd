@@ -2,11 +2,15 @@ extends Area2D
 
 const WARN_TIME = 1.0
 const FIRE_TIME = 0.4
+const LENGTH = 1400.0      # matches the CollisionShape2D
+const PX_SCALE = 2.0       # sun_beam is ~17 art px thick -> 34 px over a 30 px hitbox
 
 var spark = 0.0
 
 func _ready():
 	$Sparks.z_index = 2
+	FX.strip("sun_beam", $Visual, LENGTH, PX_SCALE)
+	FX.spawn("sun_beam_origin", $Visual, Vector2.ZERO, 0, PX_SCALE)
 	body_entered.connect(_on_body_entered)
 	$Sparks.draw.connect(_draw_sparks)
 	$Visual.hide()

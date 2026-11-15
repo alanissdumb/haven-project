@@ -86,6 +86,7 @@ func _physics_process(delta):
 	if direction != Vector2.ZERO:
 		var target = facing.angle() + PI / 2
 		$Ship.rotation = lerp_angle($Ship.rotation, target, TURN_SPEED * delta)
+	$Ship.thrust = engine_thrust(direction)
 
 	cooldown -= delta
 	if Input.is_action_pressed("ui_accept") and cooldown <= 0:
@@ -134,6 +135,14 @@ func _draw_explosion():
 		var dir = Vector2.RIGHT.rotated(i * TAU / 12.0 + 0.2)
 		var reach = 40.0 + (i % 3) * 30.0 + boom * 110.0
 		$Explosion.draw_line(dir * reach * 0.6, dir * reach, Color(1, 0.7, 0.3, fade), 4.0)
+# Engine flame: big while dashing, small while moving
+func engine_thrust(direction):
+	if dashing:
+		return $Ship.THRUST_BIG
+	if direction != Vector2.ZERO:
+		return $Ship.THRUST_SMALL
+	return $Ship.THRUST_OFF
+
 func can_be_hit():
 	return not (dead or invincible or dashing)
 

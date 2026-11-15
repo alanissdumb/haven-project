@@ -4,9 +4,12 @@
 [ext_resource type="PackedScene" path="res://levels/final_boss/player.tscn" id="1_ig7tw"]
 [ext_resource type="PackedScene" path="res://levels/final_boss/boss.tscn" id="2_0xm2m"]
 [ext_resource type="Script" path="res://levels/final_boss/camera_follow.gd" id="4_1bvp3"]
+[ext_resource type="PackedScene" path="res://assets/space/space_background.tscn" id="9_space"]
 
 [node name="Main" type="Node2D" unique_id=1982255950]
 script = ExtResource("1_h2yge")
+
+[node name="SpaceBackground" parent="." instance=ExtResource("9_space")]
 
 [node name="Player" parent="." unique_id=137797174 instance=ExtResource("1_ig7tw")]
 position = Vector2(576, 324)
@@ -15,5 +18,6 @@ position = Vector2(576, 324)
 position = Vector2(1302, 324)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=925294256]
-position = Vector2(576, 324)
+position = Vector2(702, 324)
+zoom = Vector2(0.6, 0.6)
 script = ExtResource("4_1bvp3")

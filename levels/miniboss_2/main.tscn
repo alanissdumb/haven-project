@@ -3,9 +3,12 @@
 [ext_resource type="Script" path="res://levels/miniboss_2/main.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" path="res://levels/miniboss_2/player.tscn" id="1_ig7tw"]
 [ext_resource type="PackedScene" path="res://levels/miniboss_2/boss.tscn" id="2_0xm2m"]
+[ext_resource type="PackedScene" path="res://assets/space/space_background.tscn" id="9_space"]
 
 [node name="Main" type="Node2D" unique_id=1982255950]
 script = ExtResource("1_h2yge")
+
+[node name="SpaceBackground" parent="." instance=ExtResource("9_space")]
 
 [node name="Player" parent="." unique_id=137797174 instance=ExtResource("1_ig7tw")]
 position = Vector2(576, 324)

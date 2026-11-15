@@ -230,6 +230,7 @@ func _physics_process(delta):
 	if direction != Vector2.ZERO:
 		var target = facing.angle() + PI / 2
 		$Ship.rotation = lerp_angle($Ship.rotation, target, TURN_SPEED * delta)
+	$Ship.thrust = engine_thrust(direction)
 
 	handle_fire(delta)
 
@@ -327,6 +328,14 @@ func _unhandled_input(event):
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_SHIFT:
 		try_dash()
 
+# Engine flame: big while dashing or speed boosted, small while moving
+func engine_thrust(direction):
+	if dashing or buffs.has("speed") or buffs.has("super"):
+		return $Ship.THRUST_BIG
+	if direction != Vector2.ZERO:
+		return $Ship.THRUST_SMALL
+	return $Ship.THRUST_OFF
+
 func try_dash():
 	if dead or dashing or dash_cd > 0.0:
 		return
@@ -338,6 +347,7 @@ func try_dash():
 
 	dash_cd = 0.0 if buffs.has("dash") else DASH_COOLDOWN
 	dashing = true
+	$Ship.thrust = $Ship.THRUST_BIG   # so the dash ghost leaves the big flame too
 	spawn_ghost()
 
 	var arena = arena_rect()

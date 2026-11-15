@@ -1,0 +1,236 @@
+[
+ {
+  "file": "sun/sun_ring.png",
+  "frame_w": 96,
+  "frame_h": 96,
+  "frames": 8,
+  "rows": 1,
+  "fps": 12,
+  "loop": true
+ },
+ {
+  "file": "sun/sun_beam.png",
+  "frame_w": 64,
+  "frame_h": 24,
+  "frames": 8,
+  "rows": 1,
+  "fps": 14,
+  "loop": true
+ },
+ {
+  "file": "sun/sun_beam_origin.png",
+  "frame_w": 32,
+  "frame_h": 32,
+  "frames": 8,
+  "rows": 1,
+  "fps": 14,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_spiral_particles.png",
+  "frame_w": 96,
+  "frame_h": 96,
+  "frames": 16,
+  "rows": 1,
+  "fps": 12,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_random_particles.png",
+  "frame_w": 96,
+  "frame_h": 96,
+  "frames": 16,
+  "rows": 1,
+  "fps": 10,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_em_wave_ring.png",
+  "frame_w": 128,
+  "frame_h": 128,
+  "frames": 8,
+  "rows": 1,
+  "fps": 12,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_em_wave_segment.png",
+  "frame_w": 64,
+  "frame_h": 24,
+  "frames": 8,
+  "rows": 1,
+  "fps": 12,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_em_wave_safe.png",
+  "frame_w": 64,
+  "frame_h": 24,
+  "frames": 8,
+  "rows": 1,
+  "fps": 12,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_grid_beam.png",
+  "frame_w": 64,
+  "frame_h": 16,
+  "frames": 8,
+  "rows": 1,
+  "fps": 14,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_grid_warning.png",
+  "frame_w": 64,
+  "frame_h": 5,
+  "frames": 6,
+  "rows": 1,
+  "fps": 12,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_grid_cross.png",
+  "frame_w": 32,
+  "frame_h": 32,
+  "frames": 8,
+  "rows": 1,
+  "fps": 14,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_ult_beam.png",
+  "frame_w": 64,
+  "frame_h": 28,
+  "frames": 8,
+  "rows": 1,
+  "fps": 14,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_ult_beam_origin.png",
+  "frame_w": 40,
+  "frame_h": 40,
+  "frames": 8,
+  "rows": 1,
+  "fps": 14,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_ult_ring.png",
+  "frame_w": 128,
+  "frame_h": 128,
+  "frames": 14,
+  "rows": 1,
+  "fps": 18,
+  "loop": false
+ },
+ {
+  "file": "black_hole/bh_ult_ring_loop.png",
+  "frame_w": 96,
+  "frame_h": 96,
+  "frames": 10,
+  "rows": 1,
+  "fps": 12,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_spark_textures.png",
+  "frame_w": 7,
+  "frame_h": 7,
+  "frames": 6,
+  "rows": 3,
+  "fps": 10,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_matter_dots.png",
+  "frame_w": 16,
+  "frame_h": 16,
+  "frames": 6,
+  "rows": 3,
+  "fps": 14,
+  "loop": true
+ },
+ {
+  "file": "sun/sun_fire_ring.png",
+  "frame_w": 128,
+  "frame_h": 128,
+  "frames": 8,
+  "rows": 1,
+  "fps": 12,
+  "loop": true
+ },
+ {
+  "file": "sun/sun_teleport_out.png",
+  "frame_w": 128,
+  "frame_h": 128,
+  "frames": 16,
+  "rows": 1,
+  "fps": 18,
+  "loop": false
+ },
+ {
+  "file": "sun/sun_teleport_in.png",
+  "frame_w": 128,
+  "frame_h": 128,
+  "frames": 16,
+  "rows": 1,
+  "fps": 18,
+  "loop": false
+ },
+ {
+  "file": "sun/sun_supernova.png",
+  "frame_w": 192,
+  "frame_h": 192,
+  "frames": 30,
+  "rows": 1,
+  "fps": 14,
+  "loop": false
+ },
+ {
+  "file": "black_hole/bh_gravity_pull.png",
+  "frame_w": 160,
+  "frame_h": 160,
+  "frames": 12,
+  "rows": 1,
+  "fps": 12,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_force_field.png",
+  "frame_w": 112,
+  "frame_h": 112,
+  "frames": 12,
+  "rows": 1,
+  "fps": 12,
+  "loop": true
+ },
+ {
+  "file": "black_hole/bh_force_field_hit.png",
+  "frame_w": 112,
+  "frame_h": 112,
+  "frames": 6,
+  "rows": 1,
+  "fps": 18,
+  "loop": false
+ },
+ {
+  "file": "black_hole/bh_force_field_break.png",
+  "frame_w": 112,
+  "frame_h": 112,
+  "frames": 12,
+  "rows": 1,
+  "fps": 16,
+  "loop": false
+ },
+ {
+  "file": "black_hole/bh_void_orbs.png",
+  "frame_w": 16,
+  "frame_h": 16,
+  "frames": 6,
+  "rows": 3,
+  "fps": 12,
+  "loop": true
+ }
+]

@@ -193,6 +193,7 @@ func _spawn_ring(pos: Vector2, angle: float, speed: float, radius: float, col: C
 	ring.radius = radius
 	ring.color = col
 	ring.velocity = Vector2.RIGHT.rotated(angle) * speed
+	ring.heading = angle
 	ring.position = pos
 	get_parent().add_child(ring)
 	return ring
